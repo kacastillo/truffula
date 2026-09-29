@@ -10,6 +10,11 @@ PLEASE MAKE FREQUENT COMMITS AS YOU FILL OUT THIS FILE.
 - main declares `throws Exception` because `TruffulaOptions` can throw `FileNotFoundException`.
 
 ## ConsoleColor.java
+ enum: a fixed set of named constants. You can't create new ones, and you compare them with `==`.
+- Each constant carries a String ANSI escape code, passed to the private constructor ->`RED("\033[0;31m")`.
+- `getCode()` returns the code, and `toString()` is overridden to return the code too. So `"" + ConsoleColor.RED` produces the escape sequence directlyy
+- `RESET` isn't a real color. It restores the terminal's default color
+- `ConsoleColor.values()` returns every constant as an array.
 
 ## ColorPrinter.java / ColorPrinterTest.java
 
