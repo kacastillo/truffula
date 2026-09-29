@@ -22,6 +22,19 @@ Wraps a PrintStream and remembers a currentColor -> (default `WHITE`).
 - The existing test captures output with a `ByteArrayOutputStream` wrapped in a `PrintStream`, then compares the string exactly. Expected output ->  `COLOR + message + newline + RESET` so the reset comes after the newline.
 
 ## TruffulaOptions.java / TruffulaOptionsTest.java
+- Parsing rules from the Javadoc:
+  - The last arg is always the path.
+  - `-h` sets showHidden to true (default false)
+  - `-nc` sets useColor to false (default true)
+  - Flag order doesn't matter, and either or both may be absent.
+  - Unknown flags or a missing path throw `IllegalArgumentException`.
+  - A path that doesn't exist, or is a file rather than a directory, throws `FileNotFoundException`
+- `java.io.File` -> it represents a path, which may or may not exist on disk.
+  - `exists()` checks that the path is real
+  - `isDirectory()` checks it's a folder
+  - `getName()` returns the last part of the path
+  - `listFiles()` returns the children, or `null` if it isn't a readable directory
+- The existing test uses `@TempDir`, which is JUnit's way of giving each test a throwaway folder that's deleted later
 
 ## TruffulaPrinter.java / TruffulaPrinterTest.java
 
