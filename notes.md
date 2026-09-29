@@ -17,6 +17,9 @@ PLEASE MAKE FREQUENT COMMITS AS YOU FILL OUT THIS FILE.
 - `ConsoleColor.values()` returns every constant as an array.
 
 ## ColorPrinter.java / ColorPrinterTest.java
+Wraps a PrintStream and remembers a currentColor -> (default `WHITE`).
+- println(...) variants all into print(String message, boolean reset), and println just appends System.lineSeparator().
+- The existing test captures output with a `ByteArrayOutputStream` wrapped in a `PrintStream`, then compares the string exactly. Expected output ->  `COLOR + message + newline + RESET` so the reset comes after the newline.
 
 ## TruffulaOptions.java / TruffulaOptionsTest.java
 
