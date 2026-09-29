@@ -4,6 +4,10 @@ As part of Wave 0, please fill out notes for each of the below files. They are i
 PLEASE MAKE FREQUENT COMMITS AS YOU FILL OUT THIS FILE.
 
 ## App.java
+- Holds main, the entry point when run from the command line (java src/App.java -nc -h src).
+- `main` needs to do three things: build a `TruffulaOptions` from `args`, build a TruffulaPrinter from the options, and call `printTree()`.
+- The Javadoc describes the arguments: optional flags `-h` and `-nc`, then a required path.
+- main declares `throws Exception` because `TruffulaOptions` can throw `FileNotFoundException`.
 
 ## ConsoleColor.java
 
