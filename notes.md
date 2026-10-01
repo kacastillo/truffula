@@ -37,5 +37,7 @@ Wraps a PrintStream and remembers a currentColor -> (default `WHITE`).
 - The existing test uses `@TempDir`, which is JUnit's way of giving each test a throwaway folder that's deleted later
 
 ## TruffulaPrinter.java / TruffulaPrinterTest.java
-
+Fields: `options`, `colorSequence` and `out` (a `ColorPrinter`).
+- Four constructors chain together with `this(...)`, and the last one does the real work T
+- Must print through `out.println`, not `System.out.println`.
 ## AlphabeticalFileSorter.java
