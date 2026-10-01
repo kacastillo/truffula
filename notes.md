@@ -41,3 +41,6 @@ Fields: `options`, `colorSequence` and `out` (a `ColorPrinter`).
 - Four constructors chain together with `this(...)`, and the last one does the real work T
 - Must print through `out.println`, not `System.out.println`.
 ## AlphabeticalFileSorter.java
+ Static utility: sort(File[] files) sorts by getName(), ignoring case, and returns the array.
+- Uses a short inline comparator, with `Arrays.sort`. googled -> but the idea is "compare two files by lowercase-insensitive name."
+- It sorts in place and also returns the array.
