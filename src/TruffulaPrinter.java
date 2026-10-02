@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.PrintStream;
 import java.util.List;
 
@@ -105,6 +106,51 @@ public class TruffulaPrinter {
   public void printTree() {
     // TODO: Implement this!
     // REQUIRED: ONLY use java.io, DO NOT use java.nio
+//     File root = options.getRoot();
+//     out.println(root.getName() + "/");
+//     printChildren(root, 1);
+//   }
+//   private void printChildren(File dir, int depth) {
+//   File[] children = dir.listFiles();
+//   if (children == null) {
+//     return; // unreadable directory
+//   }
+//   String indent = "   ".repeat(depth);
+//   for (File child : children) {
+//     if (child.isDirectory()) {
+//       out.println(indent + child.getName() + "/");
+//       printChildren(child, depth + 1);
+//     } else {
+//       out.println(indent + child.getName());
+//     }
+//   }
+// }
+// }
+    // REQUIRED: ONLY use java.io, DO NOT use java.nio
+    // DO NOT USE SYSTEM.OUT.PRINTLN
+    // USE out.println instead (will use your ColorPrinter)
+    File root = options.getRoot();
+    out.println(root.getName() + "/");
+    printChildren(root, 1);
+  }
+
+  private void printChildren(File dir, int depth) {
+    File[] children = dir.listFiles();
+    if (children == null) {
+      return; // unreadable directory
+    }
+    String indent = "   ".repeat(depth);
+    for (File child : children) {
+      if (child.isDirectory()) {
+        out.println(indent + child.getName() + "/");
+        printChildren(child, depth + 1);
+      } else {
+        out.println(indent + child.getName());
+      }
+    }
+  }
+}
+
     
     // Hints:
     // - Add a recursive helper method
@@ -112,7 +158,5 @@ public class TruffulaPrinter {
     // DO NOT USE SYSTEM.OUT.PRINTLN
     // USE out.println instead (will use your ColorPrinter)
 
-    out.println("printTree was called!");
-    out.println("My options are: " + options);
-  }
-}
+    // out.println("printTree was called!");
+    // out.println("My options are: " + options);
