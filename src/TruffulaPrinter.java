@@ -139,6 +139,7 @@ public class TruffulaPrinter {
     if (children == null) {
       return; // unreadable directory
     }
+    AlphabeticalFileSorter.sort(children);
     String indent = "   ".repeat(depth);
     for (File child : children) {
       if (child.isHidden() && !options.isShowHidden()) {

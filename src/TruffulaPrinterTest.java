@@ -223,5 +223,61 @@ public class TruffulaPrinterTest {
         assertFalse(output.contains(".hiddenDir"));
         assertFalse(output.contains("inside.txt"));
     }
+
+    // tests for color
+
+        @Test
+    public void testColorsCycleByDepth(@TempDir File tempDir) throws IOException {
+        // Arrange: One entry per folder so alphabetical order doesn't matter
+        // root (white) -> a (purple) -> b (yellow) -> c (white) -> file.txt (purple)
+        File root = new File(tempDir, "root");
+        File c = new File(root, "a/b/c");
+        assertTrue(c.mkdirs());
+        new File(c, "file.txt").createNewFile();
+
+        TruffulaOptions options = new TruffulaOptions(root, false, true);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(baos);
+        TruffulaPrinter printer = new TruffulaPrinter(options, printStream);
+
+        String nl = System.lineSeparator();
+        ConsoleColor reset = ConsoleColor.RESET;
+        StringBuilder expected = new StringBuilder();
+        expected.append(ConsoleColor.WHITE).append("root/").append(nl).append(reset);
+        expected.append(ConsoleColor.PURPLE).append("   a/").append(nl).append(reset);
+        expected.append(ConsoleColor.YELLOW).append("      b/").append(nl).append(reset);
+        expected.append(ConsoleColor.WHITE).append("         c/").append(nl).append(reset);
+        expected.append(ConsoleColor.PURPLE).append("            file.txt").append(nl).append(reset);
+
+        // Act: Print the tree
+        printer.printTree();
+        String output = baos.toString();
+
+        // Assert: Each depth uses the next color, wrapping back to white
+        assertEquals(expected.toString(), output);
+    }
+
+    @Test
+    public void testNoColorPrintsEverythingInWhite(@TempDir File tempDir) throws IOException {
+        // Arrange: A nested folder, with color turned off
+        File root = new File(tempDir, "root");
+        File sub = new File(root, "sub");
+        assertTrue(sub.mkdirs());
+        new File(sub, "file.txt").createNewFile();
+
+        TruffulaOptions options = new TruffulaOptions(root, false, false);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(baos);
+        TruffulaPrinter printer = new TruffulaPrinter(options, printStream);
+
+        // Act: Print the tree
+        printer.printTree();
+        String output = baos.toString();
+
+        // Assert: Only white is used, never purple or yellow
+        assertTrue(output.contains(ConsoleColor.WHITE.toString()));
+        assertFalse(output.contains(ConsoleColor.PURPLE.toString()));
+        assertFalse(output.contains(ConsoleColor.YELLOW.toString()));
+    }
 }
 
