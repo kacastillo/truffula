@@ -130,7 +130,7 @@ public class TruffulaPrinter {
     // DO NOT USE SYSTEM.OUT.PRINTLN
     // USE out.println instead (will use your ColorPrinter)
     File root = options.getRoot();
-    out.println(root.getName() + "/");
+    printLine(root.getName() + "/",0);
     printChildren(root, 1);
   }
 
@@ -143,15 +143,28 @@ public class TruffulaPrinter {
     for (File child : children) {
       if (child.isHidden() && !options.isShowHidden()) {
         continue; }
-        if (child.isDirectory()) {
-        out.println(indent + child.getName() + "/");
-        printChildren(child, depth + 1);
-      } else {
-        out.println(indent + child.getName());
-      }
-    }
-  } 
+    if (child.isDirectory()) {
+  printLine(indent + child.getName() + "/", depth);
+  printChildren(child, depth + 1);
+} else {
+  printLine(indent + child.getName(), depth);
 }
+    }
+  }
+
+  private void printLine(String text, int depth) {
+    if (options.isUseColor()) {
+      out.setCurrentColor(colorSequence.get(depth % colorSequence.size()));
+    }
+    else {
+      out.setCurrentColor(ConsoleColor.WHITE);
+    }
+    out.println(text);
+    }
+
+  }
+  
+
 
     
     // Hints:
