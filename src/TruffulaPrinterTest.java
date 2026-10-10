@@ -146,6 +146,7 @@ public class TruffulaPrinterTest {
         expected.append(yellow).append("      notes.txt").append(nl).append(reset);
         expected.append(yellow).append("      README.md").append(nl).append(reset);
         expected.append(purple).append("   zebra.txt").append(nl).append(reset);
+    }
 
         // Assert that the output matches the expected output exactly
     //     assertEquals(expected.toString(), output);
@@ -279,5 +280,32 @@ public class TruffulaPrinterTest {
         assertFalse(output.contains(ConsoleColor.PURPLE.toString()));
         assertFalse(output.contains(ConsoleColor.YELLOW.toString()));
     }
+        @Test
+    public void testFilesAreSortedAlphabeticallyIgnoringCase(@TempDir File tempDir) throws IOException {
+        // Arrange: Files created out of order, with mixed upper and lower case, color turned off
+        File root = new File(tempDir, "root");
+        assertTrue(root.mkdir());
+        new File(root, "zebra.txt").createNewFile();
+        new File(root, "Apple.txt").createNewFile();
+        new File(root, "banana.txt").createNewFile();
+
+        TruffulaOptions options = new TruffulaOptions(root, false, false);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(baos);
+        TruffulaPrinter printer = new TruffulaPrinter(options, printStream);
+
+        // Act: Print the tree
+        printer.printTree();
+        String output = baos.toString();
+
+        // Assert: Apple comes before banana, which comes before zebra
+        int apple = output.indexOf("Apple.txt");
+        int banana = output.indexOf("banana.txt");
+        int zebra = output.indexOf("zebra.txt");
+        assertTrue(apple >= 0);
+        assertTrue(apple < banana);
+        assertTrue(banana < zebra);
+    }
 }
+
 
