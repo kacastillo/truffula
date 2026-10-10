@@ -141,14 +141,16 @@ public class TruffulaPrinter {
     }
     String indent = "   ".repeat(depth);
     for (File child : children) {
-      if (child.isDirectory()) {
+      if (child.isHidden() && !options.isShowHidden()) {
+        continue; }
+        if (child.isDirectory()) {
         out.println(indent + child.getName() + "/");
         printChildren(child, depth + 1);
       } else {
         out.println(indent + child.getName());
       }
     }
-  }
+  } 
 }
 
     

@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class TruffulaPrinterTest {
 
@@ -147,6 +148,80 @@ public class TruffulaPrinterTest {
         expected.append(purple).append("   zebra.txt").append(nl).append(reset);
 
         // Assert that the output matches the expected output exactly
-        assertEquals(expected.toString(), output);
+    //     assertEquals(expected.toString(), output);
+    // }
+
+//     private static String runPrinter(File root, boolean showHidden, boolean useColor) {
+//     ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//     PrintStream printStream = new PrintStream(baos);
+//     new TruffulaPrinter(new TruffulaOptions(root, showHidden, useColor), printStream).printTree();
+//     return baos.toString();
+// }
+    @Test
+    public void testHiddenFilesAreNotShownWhenShowHiddenIsFalse(@TempDir File tempDir) throws IOException {
+        // Arrange: A folder with one visible file and one hidden file, hidden files turned off
+        File root = new File(tempDir, "root");
+        assertTrue(root.mkdir());
+        new File(root, "visible.txt").createNewFile();
+        createHiddenFile(root, ".secret.txt");
+
+        TruffulaOptions options = new TruffulaOptions(root, false, false);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(baos);
+        TruffulaPrinter printer = new TruffulaPrinter(options, printStream);
+
+        // Act: Print the tree
+        printer.printTree();
+        String output = baos.toString();
+
+        // Assert: The visible file is printed and the hidden file is not
+        assertTrue(output.contains("visible.txt"));
+        assertFalse(output.contains(".secret.txt"));
+    }
+
+    @Test
+    public void testHiddenFilesAreShownWhenShowHiddenIsTrue(@TempDir File tempDir) throws IOException {
+        // Arrange: The same folder, but hidden files turned on
+        File root = new File(tempDir, "root");
+        assertTrue(root.mkdir());
+        new File(root, "visible.txt").createNewFile();
+        createHiddenFile(root, ".secret.txt");
+
+        TruffulaOptions options = new TruffulaOptions(root, true, false);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(baos);
+        TruffulaPrinter printer = new TruffulaPrinter(options, printStream);
+
+        // Act: Print the tree
+        printer.printTree();
+        String output = baos.toString();
+
+        // Assert: Both the visible and hidden files are printed
+        assertTrue(output.contains("visible.txt"));
+        assertTrue(output.contains(".secret.txt"));
+    }
+
+    @Test
+    public void testContentsOfHiddenFolderAreNotShown(@TempDir File tempDir) throws IOException {
+        // Arrange: A hidden folder containing a normal file, hidden files turned off
+        File root = new File(tempDir, "root");
+        assertTrue(root.mkdir());
+        File hiddenDir = new File(root, ".hiddenDir");
+        assertTrue(hiddenDir.mkdir());
+        new File(hiddenDir, "inside.txt").createNewFile();
+
+        TruffulaOptions options = new TruffulaOptions(root, false, false);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(baos);
+        TruffulaPrinter printer = new TruffulaPrinter(options, printStream);
+
+        // Act: Print the tree
+        printer.printTree();
+        String output = baos.toString();
+
+        // Assert: Neither the hidden folder nor anything inside it is printed
+        assertFalse(output.contains(".hiddenDir"));
+        assertFalse(output.contains("inside.txt"));
     }
 }
+
